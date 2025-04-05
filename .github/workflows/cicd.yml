@@ -210,6 +210,7 @@ jobs:
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git add kubernetes/deployment.yaml
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update Kubernetes deployment with new image tag: sha-${{ github.sha }} [skip ci]"
+          git pull
           git push
 
   cleanup:
