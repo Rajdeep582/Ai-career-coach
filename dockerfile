@@ -9,7 +9,7 @@ RUN apt-get update && apt-get clean && apt-get install -y openssl
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN rm -rf node_modules package-lock.json && npm install
+RUN npm install
 
 
 # Copy all files
