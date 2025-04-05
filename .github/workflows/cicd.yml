@@ -1,5 +1,8 @@
 name: CI/CD Pipeline
 
+permissions:
+  contents: write  # Allows GitHub Actions to push changes
+
 on:
   push:
     branches: [main]
@@ -8,8 +11,7 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
- # workflow_dispatch:
-
+  workflow_dispatch:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/${{ github.repository }}
@@ -182,10 +184,9 @@ jobs:
 
       - name: Setup Git config
         run: |
-          git config user.name "GitHub Actions[bot]"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      
       - name: Update Kubernetes deployment file with new image
         env:
           IMAGE_TAG: sha-${{ github.sha }}
@@ -203,7 +204,10 @@ jobs:
           grep -A 2 "image:" kubernetes/deployment.yaml || echo "No image line found"
 
       - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git add kubernetes/deployment.yaml
           git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update Kubernetes deployment with new image tag: sha-${{ github.sha }} [skip ci]"
           git push
