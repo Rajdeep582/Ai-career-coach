@@ -8,7 +8,7 @@ on:
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
- # workflow_dispatch:
+  workflow_dispatch:
 
 # on:
 #   workflow_dispatch:
